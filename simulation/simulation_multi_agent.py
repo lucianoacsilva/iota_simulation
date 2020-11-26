@@ -185,6 +185,8 @@ class Multi_Agent_Simulation:
             self.unweighted_MCMC(transaction)
         elif(self.tip_selection_algo == "weighted"):
             self.weighted_MCMC(transaction)
+        elif(self.tip_selection_algo == "score"):
+            self.score_selection(transaction)
         else:
             print("ERROR:  Valid tip selection algorithms are 'random', 'weighted', 'unweighted'")
             sys.exit()
@@ -311,14 +313,35 @@ class Multi_Agent_Simulation:
 
         self.DG.add_edge(transaction, tip1)
         transaction.score += tip1.score
-        print("Score: ", transaction.score)
 
         if (tip1 != tip2):
             self.DG.add_edge(transaction, tip2)
             transaction.score += tip2.score
-            print("Score: ", transaction.score)
 
-    
+    def score_selection(self, transaction):
+        #Needed for plotting number of tips over time for ALL agents
+        for agent in self.agents:
+            if(agent != transaction.agent):
+                self.get_visible_transactions(transaction.arrival_time, agent)
+                valid_tips = self.get_valid_tips_multiple_agents(agent)
+                agent.record_tips.append(valid_tips)
+
+        #Get visible transactions and valid tips (and record these)
+        self.get_visible_transactions(transaction.arrival_time, transaction.agent)
+        valid_tips = self.get_valid_tips_multiple_agents(transaction.agent)
+        transaction.agent.record_tips.append(valid_tips)
+        self.record_tips.append(valid_tips)
+
+        #Reference two random valid tips
+        tip1 = self.select_by_score(transaction, valid_tips)
+        tip2 = self.select_by_score(transaction, valid_tips)
+
+        self.DG.add_edge(transaction, tip1)
+        transaction.score += tip1.score
+
+        if (tip1 != tip2):
+            self.DG.add_edge(transaction, tip2)
+            transaction.score += tip2.score
 
 
     #############################################################################
@@ -368,6 +391,12 @@ class Multi_Agent_Simulation:
             walker_on = np.random.choice(visible_approvers)
 
         return walker_on
+
+    def select_by_score(self, transaction, valid_tips):
+
+        valid_tips.sort(key=lambda tip: tip.score, reverse=False)
+
+        return valid_tips[0]
 
 
     #############################################################################

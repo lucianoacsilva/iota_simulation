@@ -41,12 +41,12 @@ def print_graph(self):
     tips = self.get_tips()
     for tip in tips:
         # self.DG.node[tip]["node_color"] = '#ffdbb8'
-        self.DG.node[tip]["node_color"] = self.agent_tip_colors[int(str(tip.agent))]
+        self.DG.nodes[tip]["node_color"] = self.agent_tip_colors[int(str(tip.agent))]
 
     # col = list(nx.get_node_attributes(self.DG, 'node_color').values()) #Didn't work on Linux
     col = []
     for transaction in self.DG:
-        col.append(self.DG.node[transaction]["node_color"])
+        col.append(self.DG.nodes[transaction]["node_color"])
 
     #Creating figure
     plt.figure(figsize=(14, 7))
