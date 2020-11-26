@@ -339,9 +339,14 @@ class Multi_Agent_Simulation:
         self.DG.add_edge(transaction, tip1)
         transaction.score += tip1.score
 
+        # Check common descendants
+        tip1_descendants = map(lambda tx: tx.id, nx.descendants(self.DG, tip1))
+        tip2_descendants = map(lambda tx: tx.id, nx.descendants(self.DG, tip2))
+        common_descendants_ids = list(set(tip1_descendants).intersection(tip2_descendants))
+
         if (tip1 != tip2):
-            self.DG.add_edge(transaction, tip2)
-            transaction.score += tip2.score
+            self.DG.add_edge(transaction, tip2)    
+            transaction.score = transaction.score + tip2.score - len(common_descendants_ids)     
 
 
     #############################################################################
