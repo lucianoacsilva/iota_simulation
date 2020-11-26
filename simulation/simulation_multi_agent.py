@@ -393,10 +393,13 @@ class Multi_Agent_Simulation:
         return walker_on
 
     def select_by_score(self, transaction, valid_tips):
+        tips_scores = list(map(lambda tip: tip.score, valid_tips))
+        tips_sum_scores = sum(tips_scores)
+        tips_probabilities = list(map(lambda tip: tip/tips_sum_scores, tips_scores))
 
-        valid_tips.sort(key=lambda tip: tip.score, reverse=False)
+        tip_selected = np.random.choice(valid_tips, p = tips_probabilities)
 
-        return valid_tips[0]
+        return tip_selected
 
 
     #############################################################################
