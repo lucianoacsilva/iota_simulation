@@ -8,6 +8,7 @@ class Transaction:
 
         #For tip selection and calculating confirmation_confidence
         self.cum_weight = 1
+        self.score = 1
         self.cum_weight_multiple_agents  = defaultdict(lambda: 1)
         self.exit_probability = 0
         self.exit_probability_multiple_agents  = defaultdict(lambda: 0)

@@ -310,8 +310,15 @@ class Multi_Agent_Simulation:
         tip2 = np.random.choice(valid_tips)
 
         self.DG.add_edge(transaction, tip1)
+        transaction.score += tip1.score
+        print("Score: ", transaction.score)
+
         if (tip1 != tip2):
             self.DG.add_edge(transaction, tip2)
+            transaction.score += tip2.score
+            print("Score: ", transaction.score)
+
+    
 
 
     #############################################################################
